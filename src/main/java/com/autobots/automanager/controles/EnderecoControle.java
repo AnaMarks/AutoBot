@@ -6,57 +6,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.autobots.automanager.entidades.Cliente;
 import com.autobots.automanager.entidades.Endereco;
-import com.autobots.automanager.modelo.ClienteSelecionador;
-import com.autobots.automanager.modelo.EnderecoAtualizador;
-import com.autobots.automanager.modelo.EnderecoSelecionador;
-import com.autobots.automanager.repositorios.ClienteRepositorio;
+import com.autobots.automanager.modelo.endereco.EnderecoAtualizador;
+import com.autobots.automanager.modelo.endereco.EnderecoSelecionador;
 import com.autobots.automanager.repositorios.EnderecoRepositorio;
 
 @RestController
+@RequestMapping("/endereco")
 public class EnderecoControle {
 	@Autowired
-	private ClienteRepositorio repositorio;
+	private EnderecoRepositorio repositorio;
+	@Autowired
+	private EnderecoSelecionador selecionador;
 
-	@Autowired
-	private ClienteSelecionador selecionador;
-
-	@Autowired
-	private EnderecoRepositorio repositorioEndereco;
-	
-	@Autowired
-	private EnderecoSelecionador repositorioSelecionador;
-	
 	@GetMapping("/endereco/{id}")
 	public Endereco obterEndereco(@PathVariable long id) {
-		List<Endereco> enderecos = repositorioEndereco.findAll();
-		return repositorioSelecionador.selecionar(enderecos, id);
+		List<Endereco> enderecos = repositorio.findAll();
+		return selecionador.selecionar(enderecos, id);
 	}
 
 	@GetMapping("/enderecos")
-	public List<Endereco> obterEndereco() {
-		List<Endereco> enderecos = repositorioEndereco.findAll();
+	public List<Endereco> obterEnderecos() {
+		List<Endereco> enderecos = repositorio.findAll();
 		return enderecos;
 	}
 
-	@PutMapping("/atualizarEndereco")
-	public void atualizarEndereco(@RequestBody Cliente atualizacao) {
-		Cliente cliente = repositorio.getById(atualizacao.getId());
-		EnderecoAtualizador atualizador = new EnderecoAtualizador();
-		atualizador.atualizar(cliente.getEndereco(), atualizacao.getEndereco());
-		repositorio.save(cliente);
+	@PostMapping("/cadastro")
+	public void cadastrarEndereco(@RequestBody Endereco endereco) {
+		repositorio.save(endereco);
 	}
 
-	@DeleteMapping("/excluirEndereco/{id}")
-	public void excluirTelefone(@PathVariable long id) {
-		Endereco endereco = repositorioEndereco.getById(id);
-		Cliente cliente = repositorio.findByTelefonesId(endereco.getId());
-		cliente.getEndereco().remove(endereco);
-		repositorio.delete(cliente);
+	@PutMapping("/atualizar")
+	public void atualizarEndereco(@RequestBody Endereco atualizacao) {
+		Endereco endereco = repositorio.getById(atualizacao.getId());
+		EnderecoAtualizador atualizador = new EnderecoAtualizador();
+		atualizador.atualizar(endereco, atualizacao);
+		repositorio.save(endereco);
+	}
+
+	@DeleteMapping("/excluir")
+	public void excluirEndereco(@RequestBody Endereco exclusao) {
+		Endereco endereco = repositorio.getById(exclusao.getId());
+		repositorio.delete(endereco);
 	}
 }

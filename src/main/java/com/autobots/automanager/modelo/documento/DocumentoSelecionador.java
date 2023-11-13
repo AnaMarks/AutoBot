@@ -1,6 +1,9 @@
-package com.autobots.automanager.modelo;
+package com.autobots.automanager.modelo.documento;
+
 import java.util.List;
+
 import org.springframework.stereotype.Component;
+
 import com.autobots.automanager.entidades.Documento;
 
 @Component
@@ -9,7 +12,8 @@ public class DocumentoSelecionador {
 		Documento selecionado = null;
 		for (Documento documento : documentos) {
 			if (documento.getId() == id) {
-				selecionado = documento;}
+				selecionado = documento;
+			}
 		}
 		return selecionado;
 	}

@@ -1,6 +1,9 @@
-package com.autobots.automanager.modelo;
+package com.autobots.automanager.modelo.telefone;
+
 import java.util.List;
+
 import org.springframework.stereotype.Component;
+
 import com.autobots.automanager.entidades.Telefone;
 
 @Component
@@ -9,7 +12,8 @@ public class TelefoneSelecionador {
 		Telefone selecionado = null;
 		for (Telefone telefone : telefones) {
 			if (telefone.getId() == id) {
-				selecionado = telefone;}
+				selecionado = telefone;
+			}
 		}
 		return selecionado;
 	}

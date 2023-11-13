@@ -12,62 +12,47 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.autobots.automanager.entidades.Cliente;
 import com.autobots.automanager.entidades.Telefone;
-import com.autobots.automanager.modelo.ClienteAtualizador;
-import com.autobots.automanager.modelo.ClienteSelecionador;
-import com.autobots.automanager.modelo.TelefoneAtualizador;
-import com.autobots.automanager.modelo.TelefoneSelecionador;
-import com.autobots.automanager.repositorios.ClienteRepositorio;
+import com.autobots.automanager.modelo.telefone.TelefoneAtualizador;
+import com.autobots.automanager.modelo.telefone.TelefoneSelecionador;
 import com.autobots.automanager.repositorios.TelefoneRepositorio;
 
 @RestController
+@RequestMapping("/telefone")
 public class TelefoneControle {
 	@Autowired
-	private ClienteRepositorio repositorio;
-
+	private TelefoneRepositorio repositorio;
 	@Autowired
-	private ClienteSelecionador selecionador;
-
-	@Autowired
-	private TelefoneSelecionador selecionadorTelefone;
-	
-	@Autowired
-	private TelefoneRepositorio repositorioTelefone;
-	
+	private TelefoneSelecionador selecionador;
 
 	@GetMapping("/telefone/{id}")
 	public Telefone obterTelefone(@PathVariable long id) {
-	List<Telefone> telefones = repositorioTelefone.findAll();
-	return selecionadorTelefone.selecionar(telefones, id);
+		List<Telefone> telefones = repositorio.findAll();
+		return selecionador.selecionar(telefones, id);
 	}
 
 	@GetMapping("/telefones")
 	public List<Telefone> obterTelefones() {
-		List<Telefone> telefones = repositorioTelefone.findAll();
+		List<Telefone> telefones = repositorio.findAll();
 		return telefones;
 	}
 
-	@PostMapping("/cadastroTelefone")
-	public void cadastrarCliente(@RequestBody Cliente clientes) {
-		Cliente cliente = repositorio.getById(clientes.getId());
-		cliente.getTelefones().addAll(clientes.getTelefones());
-		repositorio.save(cliente);
+	@PostMapping("/cadastro")
+	public void cadastrarTelefone(@RequestBody Telefone telefone) {
+		repositorio.save(telefone);
 	}
 
-	@PutMapping("/atualizarTelefone")
-	public void atualizarTelefone(@RequestBody Cliente atualizacao) {
-		Cliente cliente = repositorio.getById(atualizacao.getId());
+	@PutMapping("/atualizar")
+	public void atualizarTelefone(@RequestBody Telefone atualizacao) {
+		Telefone telefone = repositorio.getById(atualizacao.getId());
 		TelefoneAtualizador atualizador = new TelefoneAtualizador();
-		atualizador.atualizar(cliente.getTelefones(), atualizacao.getTelefones());
-		repositorio.save(cliente);
+		atualizador.atualizar(telefone, atualizacao);
+		repositorio.save(telefone);
 	}
 
-	@DeleteMapping("/excluirTelefone/{id}")
-	public void excluirTelefone(@PathVariable long id) {
-		Telefone telefone = repositorioTelefone.getById(id);
-		Cliente cliente = repositorio.findByTelefonesId(telefone.getId());
-		cliente.getTelefones().remove(telefone);
-		repositorio.delete(cliente);
+	@DeleteMapping("/excluir")
+	public void excluirTelefone(@RequestBody Telefone exclusao) {
+		Telefone telefone = repositorio.getById(exclusao.getId());
+		repositorio.delete(telefone);
 	}
 }
