@@ -1,14 +1,14 @@
-package com.autobots.automanager.modelo.Documentos;
+package com.autobots.automanager.modelos.documento;
 
 import java.util.List;
 
 import com.autobots.automanager.entidades.Documento;
-import com.autobots.automanager.modelo.StringVerificadorNulo;
+import com.autobots.automanager.modelos.StringVerificadorNulo;
 
 public class DocumentoAtualizador {
 	private StringVerificadorNulo verificador = new StringVerificadorNulo();
 
-	public void atualizarr(Documento documento, Documento atualizacao) {
+	public void atualizar(Documento documento, Documento atualizacao) {
 		if (atualizacao != null) {
 			if (!verificador.verificar(atualizacao.getTipo())) {
 				documento.setTipo(atualizacao.getTipo());
@@ -16,20 +16,18 @@ public class DocumentoAtualizador {
 			if (!verificador.verificar(atualizacao.getNumero())) {
 				documento.setNumero(atualizacao.getNumero());
 			}
-		
 		}
 	}
 
 	public void atualizar(List<Documento> documentos, List<Documento> atualizacoes) {
 		for (Documento atualizacao : atualizacoes) {
 			for (Documento documento : documentos) {
-				if (atualizacao.getId() == documento.getId()) {
-					atualizarr(documento, atualizacao);					
+				if (atualizacao.getId() != null) {
+					if (atualizacao.getId() == documento.getId()) {
+						atualizar(documento, atualizacao);
+					}
 				}
-
 			}
 		}
-		
 	}
-	
 }

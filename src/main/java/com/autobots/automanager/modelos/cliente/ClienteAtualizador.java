@@ -1,12 +1,10 @@
-package com.autobots.automanager.modelo.Cliente;
-
+package com.autobots.automanager.modelos.cliente;
 
 import com.autobots.automanager.entidades.Cliente;
-import com.autobots.automanager.modelo.StringVerificadorNulo;
-import com.autobots.automanager.modelo.Documentos.DocumentoAtualizador;
-import com.autobots.automanager.modelo.Endereco.EnderecoAtualizador;
-import com.autobots.automanager.modelo.Telefone.TelefoneAtualizador;
-
+import com.autobots.automanager.modelos.StringVerificadorNulo;
+import com.autobots.automanager.modelos.documento.DocumentoAtualizador;
+import com.autobots.automanager.modelos.endereco.EnderecoAtualizador;
+import com.autobots.automanager.modelos.telefone.TelefoneAtualizador;
 
 public class ClienteAtualizador {
 	private StringVerificadorNulo verificador = new StringVerificadorNulo();
@@ -26,12 +24,10 @@ public class ClienteAtualizador {
 		}
 		if (!(atualizacao.getDataNascimento() == null)) {
 			cliente.setDataNascimento(atualizacao.getDataNascimento());
-		}		
+		}
 	}
 
 	public void atualizar(Cliente cliente, Cliente atualizacao) {
-		
-			
 		atualizarDados(cliente, atualizacao);
 		enderecoAtualizador.atualizar(cliente.getEndereco(), atualizacao.getEndereco());
 		documentoAtualizador.atualizar(cliente.getDocumentos(), atualizacao.getDocumentos());

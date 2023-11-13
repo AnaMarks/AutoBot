@@ -8,19 +8,18 @@ import javax.persistence.Id;
 
 import org.springframework.hateoas.RepresentationModel;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 @Entity
-public class Telefone extends RepresentationModel <Telefone>{
-
+@Getter
+@Setter
+public class Telefone extends RepresentationModel<Telefone>{
 	@Id()
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	@Column
 	private String ddd;
-	
 	@Column
 	private String numero;
 }

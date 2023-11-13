@@ -1,28 +1,28 @@
-package com.autobots.automanager.modelo.Telefone;
+package com.autobots.automanager.modelos.telefone;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Component;
+
 import com.autobots.automanager.controles.TelefoneControle;
 import com.autobots.automanager.entidades.Telefone;
-import com.autobots.automanager.modelo.AdicionadorLink;
+import com.autobots.automanager.modelos.AdicionadorLink;
 
 @Component
 public class AdicionadorLinkTelefone implements AdicionadorLink<Telefone> {
 
 	@Override
 	public void adicionarLink(List<Telefone> lista) {
-		for (Telefone endereco : lista) {
-			long id = endereco.getId();
+		for (Telefone telefone : lista) {
+			long id = telefone.getId();
 			Link linkProprio = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder
 							.methodOn(TelefoneControle.class)
 							.obterTelefone(id))
 					.withSelfRel();
-			endereco.add(linkProprio);
-    
+			telefone.add(linkProprio);
 		}
 	}
 
@@ -35,6 +35,4 @@ public class AdicionadorLinkTelefone implements AdicionadorLink<Telefone> {
 				.withRel("telefones");
 		objeto.add(linkProprio);
 	}
-
-
 }

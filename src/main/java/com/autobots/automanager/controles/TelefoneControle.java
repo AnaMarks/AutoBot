@@ -1,4 +1,5 @@
 package com.autobots.automanager.controles;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,99 +8,71 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.autobots.automanager.entidades.Cliente;
 import com.autobots.automanager.entidades.Telefone;
-import com.autobots.automanager.modelo.Cliente.ClienteSelecionador;
-import com.autobots.automanager.modelo.Telefone.AdicionadorLinkTelefone;
-import com.autobots.automanager.modelo.Telefone.TelefoneAtualizador;
-import com.autobots.automanager.modelo.Telefone.TelefoneSelecionador;
+import com.autobots.automanager.modelos.telefone.AdicionadorLinkTelefone;
+import com.autobots.automanager.modelos.cliente.ClienteSelecionador;
+import com.autobots.automanager.modelos.telefone.TelefoneSelecionador;
 import com.autobots.automanager.repositorios.ClienteRepositorio;
 import com.autobots.automanager.repositorios.TelefoneRepositorio;
 
 @RestController
+@RequestMapping("/telefone")
 public class TelefoneControle {
-    @Autowired
-	private ClienteRepositorio repositorioCliente;
 	@Autowired
-	private TelefoneRepositorio repositorioTelefone;
+	private TelefoneRepositorio repositorio;
 	@Autowired
-	private TelefoneSelecionador selecionador;
+	private AdicionadorLinkTelefone adicionadorLinkTelefone;
 	@Autowired
-	private ClienteSelecionador selecionadorCliente;
+	private TelefoneSelecionador selecionarTelefone;
 	@Autowired
-	private AdicionadorLinkTelefone adicionadorLink;
-	
-	@GetMapping("/telefone/{id}") 
-	public ResponseEntity<?> obterTelefone(@PathVariable long id) {
-		List<Telefone> telefones = repositorioTelefone.findAll();
-		Telefone telefone = selecionador.selecionar(telefones, id);
-		if (telefone == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Telefone não encontrado.");
-		} else {
-			adicionadorLink.adicionarLink(telefone);
-			return ResponseEntity.ok(telefone);
-		}
+	private ClienteRepositorio clienteRepositorio;
+	@Autowired
+	private ClienteSelecionador clienteSelecionador;
 
-	}
-
-
-	@GetMapping("/telefones") 
+	@GetMapping("/telefones")
 	public ResponseEntity<List<Telefone>> obterTelefones() {
-		List<Telefone> telefone = repositorioTelefone.findAll();
-		if (telefone.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(telefone);
+		HttpStatus status = HttpStatus.NOT_FOUND;
+		List<Telefone> telefones = repositorio.findAll();
+		if (telefones == null) {
+			return new ResponseEntity<List<Telefone>>(status);
 		} else {
-			adicionadorLink.adicionarLink(telefone);
-			return ResponseEntity.ok(telefone);
+			adicionadorLinkTelefone.adicionarLink(telefones);
+			status = HttpStatus.FOUND;
+			return new ResponseEntity<List<Telefone>>(telefones, status);
 		}
 	}
 
-	@PostMapping("/cadastroTelefone") 
-	public ResponseEntity<?> cadastrarDocumentos(@RequestBody Cliente cliente) {
-
-		List<Cliente> clientes = repositorioCliente.findAll();
-		Cliente clienteTelefone = selecionadorCliente.selecionar(clientes, cliente.getId());
-		if (clienteTelefone != null) {
-			clienteTelefone.getTelefones().addAll(cliente.getTelefones());
-			repositorioCliente.save(clienteTelefone);
-			return ResponseEntity.ok(clienteTelefone);
-		} else{
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
-		}
-		
-	} 
-
-	@PutMapping("/atualizarTelefone") 
-	public ResponseEntity<?> atualizarDocumentos(@RequestBody Cliente atualizacao) {
-      
-		List<Cliente> clientes = repositorioCliente.findAll();
-		Cliente clienteTelefone = selecionadorCliente.selecionar(clientes, atualizacao.getId());
-		if (clienteTelefone != null) {
-			TelefoneAtualizador atualizador = new TelefoneAtualizador();
-			atualizador.atualizar(clienteTelefone.getTelefones(), atualizacao.getTelefones());
-			repositorioCliente.save(clienteTelefone);
-			return ResponseEntity.ok(clienteTelefone);
-		} else{
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
-		}
+	@GetMapping("/{id}")
+	public Telefone obterTelefone(@PathVariable long id) {
+		List<Telefone> telefones = repositorio.findAll();
+		return selecionarTelefone.selecionar(telefones, id);
 	}
 
-	@DeleteMapping("/excluirTelefone/{id}") 
-	public ResponseEntity<?> excluirDocumento(@PathVariable long id) {
+	@PutMapping("/cadastro")
+	public void cadastrarTelefone(@RequestBody Cliente cliente) {
+		List<Cliente> clientes = clienteRepositorio.findAll();
+		Cliente clienteAlvo = clienteSelecionador.selecionar(clientes, cliente.getId());
+		clienteAlvo.getTelefones().addAll(cliente.getTelefones());
+		clienteRepositorio.save(clienteAlvo);
+	}
 
-		List<Telefone> telefones = repositorioTelefone.findAll();
-		Telefone telefone = selecionador.selecionar(telefones, id);
-		if (telefone != null) {
-			Cliente cliente = repositorioCliente.findByTelefonesId(id);
-			cliente.remove(telefone);
-			repositorioCliente.save(cliente);
-			return ResponseEntity.ok(cliente.getTelefones());
-		} else{
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
+	@DeleteMapping("/excluir/{clienteId}/{telefoneId}")
+	public void deletarTelefone(@PathVariable long clienteId, @PathVariable long telefoneId) {
+		Cliente cliente = clienteRepositorio.getById(clienteId);
+		List<Telefone> listaTelefones = cliente.getTelefones();
+		Telefone findTelefone = null;
+		for (Telefone telefone : listaTelefones) {
+			if (telefone.getId() == telefoneId) {
+				findTelefone = telefone;
+			}
 		}
+		listaTelefones.remove(findTelefone);
+		clienteRepositorio.save(cliente);
 	}
 }

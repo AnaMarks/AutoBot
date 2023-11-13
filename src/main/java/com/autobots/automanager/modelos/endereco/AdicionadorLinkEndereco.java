@@ -1,13 +1,14 @@
-package com.autobots.automanager.modelo.Endereco;
+package com.autobots.automanager.modelos.endereco;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import com.autobots.automanager.controles.EnderecoController;
+import org.springframework.stereotype.Component;
+
+import com.autobots.automanager.controles.EnderecoControle;
 import com.autobots.automanager.entidades.Endereco;
-import com.autobots.automanager.modelo.AdicionadorLink;
+import com.autobots.automanager.modelos.AdicionadorLink;
 
 @Component
 public class AdicionadorLinkEndereco implements AdicionadorLink<Endereco> {
@@ -18,11 +19,10 @@ public class AdicionadorLinkEndereco implements AdicionadorLink<Endereco> {
 			long id = endereco.getId();
 			Link linkProprio = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder
-							.methodOn(EnderecoController.class)
+							.methodOn(EnderecoControle.class)
 							.obterEndereco(id))
 					.withSelfRel();
 			endereco.add(linkProprio);
-    
 		}
 	}
 
@@ -30,11 +30,9 @@ public class AdicionadorLinkEndereco implements AdicionadorLink<Endereco> {
 	public void adicionarLink(Endereco objeto) {
 		Link linkProprio = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
-						.methodOn(EnderecoController.class)
+						.methodOn(EnderecoControle.class)
 						.obterEnderecos())
 				.withRel("enderecos");
 		objeto.add(linkProprio);
 	}
-
-
 }

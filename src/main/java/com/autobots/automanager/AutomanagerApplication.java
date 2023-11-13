@@ -58,7 +58,7 @@ public class AutomanagerApplication {
 			rg.setNumero("1500");
 			
 			Documento cpf = new Documento();
-			cpf.setTipo("RG");
+			cpf.setTipo("CPF");
 			cpf.setNumero("00000000001");
 			
 			cliente.getDocumentos().add(rg);

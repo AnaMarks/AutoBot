@@ -1,14 +1,14 @@
-package com.autobots.automanager.modelo.Cliente;
+package com.autobots.automanager.modelos.cliente;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Component;
 
 import com.autobots.automanager.controles.ClienteControle;
 import com.autobots.automanager.entidades.Cliente;
-import com.autobots.automanager.modelo.AdicionadorLink;
+import com.autobots.automanager.modelos.AdicionadorLink;
 
 @Component
 public class AdicionadorLinkCliente implements AdicionadorLink<Cliente> {
@@ -23,7 +23,6 @@ public class AdicionadorLinkCliente implements AdicionadorLink<Cliente> {
 							.obterCliente(id))
 					.withSelfRel();
 			cliente.add(linkProprio);
-    
 		}
 	}
 

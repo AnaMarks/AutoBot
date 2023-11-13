@@ -1,14 +1,14 @@
-package com.autobots.automanager.modelo.Documentos;
+package com.autobots.automanager.modelos.documento;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.stereotype.Component;
 
-import com.autobots.automanager.controles.DocumentosControle;
+import com.autobots.automanager.controles.DocumentoControle;
 import com.autobots.automanager.entidades.Documento;
-import com.autobots.automanager.modelo.AdicionadorLink;
+import com.autobots.automanager.modelos.AdicionadorLink;
 
 @Component
 public class AdicionadorLinkDocumento implements AdicionadorLink<Documento> {
@@ -19,11 +19,10 @@ public class AdicionadorLinkDocumento implements AdicionadorLink<Documento> {
 			long id = documento.getId();
 			Link linkProprio = WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder
-							.methodOn(DocumentosControle.class)
+							.methodOn(DocumentoControle.class)
 							.obterDocumento(id))
 					.withSelfRel();
 			documento.add(linkProprio);
-    
 		}
 	}
 
@@ -31,11 +30,9 @@ public class AdicionadorLinkDocumento implements AdicionadorLink<Documento> {
 	public void adicionarLink(Documento objeto) {
 		Link linkProprio = WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder
-						.methodOn(DocumentosControle.class)
+						.methodOn(DocumentoControle.class)
 						.obterDocumentos())
 				.withRel("documentos");
 		objeto.add(linkProprio);
 	}
-
-
 }
